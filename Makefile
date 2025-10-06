@@ -3,7 +3,7 @@ PORT ?= 8001
 LOG_LEVEL ?= INFO
 UVICORN ?= uvicorn
 
-.PHONY: dev stop ready health test commit push
+.PHONY: dev stop ready health info test commit push
 
 dev:
 	APP_LOG_LEVEL=$(LOG_LEVEL) $(UVICORN) server.app.main:app --host $(HOST) --port $(PORT) --reload
@@ -22,6 +22,9 @@ ready:
 
 health:
 	curl -s http://$(HOST):$(PORT)/health
+
+info:
+	curl -s http://$(HOST):$(PORT)/info
 
 test:
 	pytest -q
