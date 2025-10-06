@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
+from datetime import datetime, timezone
+from ..settings import settings
 
 router = APIRouter(tags=["system"])
 
@@ -13,3 +15,20 @@ class ReadyOut(BaseModel):
 @router.get("/ready", response_model=ReadyOut, summary="Readiness")
 def ready():
     return {"ready": True}
+
+class InfoOut(BaseModel):
+    app_name: str
+    version: str
+    env: str
+    startup_time: str
+
+STARTUP_TIME = datetime.now(timezone.utc).isoformat()
+
+@router.get("/info", response_model=InfoOut, summary="Service Info")
+def info():
+    return {
+        "app_name": settings.app_name,
+        "version": settings.version,
+        "env": settings.env,
+        "startup_time": STARTUP_TIME,
+    }

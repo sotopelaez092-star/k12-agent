@@ -5,7 +5,8 @@ class Settings(BaseSettings):
     log_level:str = "INFO"
     host: str = "127.0.0.1"
     port: int = 8001
-
+    env: str = "dev"
+    version: str = "0.1.0"
     # 从 .env 读取，支持 APP_ 前缀的环境变量
     model_config = SettingsConfigDict(
         env_file=".env",
