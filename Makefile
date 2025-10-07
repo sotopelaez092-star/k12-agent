@@ -1,3 +1,4 @@
+# Makefile
 HOST ?= 127.0.0.1
 PORT ?= 8001
 LOG_LEVEL ?= INFO
@@ -29,6 +30,12 @@ info:
 test:
 	pytest -q
 
+coverage:
+	pytest --cov=server --cov-report=term-missing --cov-fail-under=85
+
+precommit-install:
+	pre-commit install
+
 commit:
 ifndef MSG
 	$(error Usage: make commit MSG="your commit message")
@@ -37,3 +44,13 @@ endif
 
 push:
 	git push origin $$(git rev-parse --abbrev-ref HEAD)
+
+lint:
+	ruff check .
+	black --check .
+	isort --check-only .
+
+format:
+	ruff check --fix .
+	isort .
+	black .

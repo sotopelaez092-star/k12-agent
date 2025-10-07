@@ -1,12 +1,15 @@
 from fastapi.testclient import TestClient
+
 from server.app.main import app
 
 client = TestClient(app)
+
 
 def test_ready_ok():
     r = client.get("/ready")
     assert r.status_code == 200
     assert r.json() == {"ready": True}
+
 
 def test_ready_request_id_header():
     # 自动生成的 X-Request-ID 存在

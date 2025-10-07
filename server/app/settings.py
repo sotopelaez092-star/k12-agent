@@ -1,10 +1,12 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
+
 from pydantic import field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     app_name: str = "k12-agent"
-    log_level:str = "INFO"
+    log_level: str = "INFO"
     host: str = "127.0.0.1"
     port: int = 8001
     env: str = "dev"
@@ -15,17 +17,25 @@ class Settings(BaseSettings):
     cors_expose_headers: List[str] = ["X-Request-ID"]
     cors_allow_credentials: bool = False
 
-    @field_validator("cors_allow_origins", "cors_allow_methods", "cors_allow_headers", "cors_expose_headers", mode="before")
+    @field_validator(
+        "cors_allow_origins",
+        "cors_allow_methods",
+        "cors_allow_headers",
+        "cors_expose_headers",
+        mode="before",
+    )
     def _parse_csv(cls, v):
         if isinstance(v, str):
             return [s.strip() for s in v.split(",") if s.strip()]
         return v
+
     # 从 .env 读取，支持 APP_ 前缀的环境变量
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="APP_",
         case_sensitive=False,
     )
+
 
 # 实例化 Settings 类，用于在应用中获取配置
 settings = Settings()

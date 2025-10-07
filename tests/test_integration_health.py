@@ -1,7 +1,8 @@
-from server.app.main import app
-from httpx import AsyncClient, ASGITransport
-
 import pytest
+from httpx import ASGITransport, AsyncClient
+
+from server.app.main import app
+
 
 @pytest.mark.asyncio
 async def test_health_integration():
