@@ -45,8 +45,10 @@ endif
 push:
 	git push origin $$(git rev-parse --abbrev-ref HEAD)
 
-lint:
-	ruff check .
+ci:
+	pre-commit run --all-files
+	make lint
+	make coverage
 	black --check .
 	isort --check-only .
 
