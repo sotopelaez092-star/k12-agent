@@ -22,8 +22,6 @@ class InfoOut(BaseModel):
     env: str
     startup_time: str
 
-STARTUP_TIME = datetime.now(timezone.utc).isoformat()
-
 @router.get("/info", response_model=InfoOut, summary="Service Info")
 def info():
     return {
@@ -32,3 +30,12 @@ def info():
         "env": settings.env,
         "startup_time": STARTUP_TIME,
     }
+
+class ValidateIn(BaseModel):
+    name: str
+    age: int
+
+@router.post("/validate", summary="Validation example")
+def validate(payload: ValidateIn):
+    # 校验成功则返回简单确认；校验失败将由 FastAPI 抛出 RequestValidationError (422)
+    return {"ok": True}
