@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
+from pydantic import field_validator
 
 class Settings(BaseSettings):
     app_name: str = "k12-agent"
@@ -13,6 +14,12 @@ class Settings(BaseSettings):
     cors_allow_headers: List[str] = ["*"]
     cors_expose_headers: List[str] = ["X-Request-ID"]
     cors_allow_credentials: bool = False
+
+    @field_validator("cors_allow_origins", "cors_allow_methods", "cors_allow_headers", "cors_expose_headers", mode="before")
+    def _parse_csv(cls, v):
+        if isinstance(v, str):
+            return [s.strip() for s in v.split(",") if s.strip()]
+        return v
     # 从 .env 读取，支持 APP_ 前缀的环境变量
     model_config = SettingsConfigDict(
         env_file=".env",
