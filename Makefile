@@ -56,3 +56,23 @@ format:
 	ruff check --fix .
 	isort .
 	black .
+
+docker-build:
+	docker build -t k12-agent:latest .
+
+docker-run:
+	docker run --rm -p 8000:8000 k12-agent:latest
+
+docker-run-dev:
+	docker run --rm -p 8000:8000 \
+		-e APP_CORS_ALLOW_ORIGINS=http://localhost:3000 \
+		k12-agent:latest
+
+docker-compose-up:
+	docker compose up -d
+
+docker-compose-down:
+	docker compose down
+
+docker-compose-logs:
+	docker compose logs -f app

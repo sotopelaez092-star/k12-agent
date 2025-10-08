@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     app_name: str = "k12-agent"
     log_level: str = "INFO"
     host: str = "127.0.0.1"
-    port: int = 8001
+    port: int = 8000
     env: str = "dev"
     version: str = "0.1.0"
     cors_allow_origins: List[str] = ["*"]

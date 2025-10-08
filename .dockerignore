@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 虚拟环境与缓存
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# 覆盖率与临时文件
+.coverage
+coverage.xml
+
+# Git
+.git/
+.gitignore
+
+# 其他
+*.log
+.env

@@ -4,6 +4,7 @@ import uuid
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_client import Counter, Histogram
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from ..settings import settings
@@ -39,6 +40,12 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
                     "status": status_code,
                 },
             )
+            REQUEST_COUNT.labels(
+                request.method, request.url.path, str(status_code)
+            ).inc()
+            REQUEST_LATENCY.labels(
+                request.method, request.url.path, str(status_code)
+            ).observe(duration_ms / 1000.0)
             raise
         else:
             duration_ms = (time.perf_counter() - start) * 1000
@@ -53,6 +60,12 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
                     "status": status_code,
                 },
             )
+            REQUEST_COUNT.labels(
+                request.method, request.url.path, str(status_code)
+            ).inc()
+            REQUEST_LATENCY.labels(
+                request.method, request.url.path, str(status_code)
+            ).observe(duration_ms / 1000.0)
             return response
 
 
@@ -66,3 +79,18 @@ def register_middlewares(app: FastAPI):
         expose_headers=settings.cors_expose_headers,
         allow_credentials=settings.cors_allow_credentials,
     )
+
+
+# 请求指标
+REQUEST_COUNT = Counter(
+    "app_http_requests_total",
+    "Total HTTP requests processed",
+    ["method", "path", "status"],
+)
+
+REQUEST_LATENCY = Histogram(
+    "app_http_request_duration_seconds",
+    "HTTP request latency in seconds",
+    ["method", "path", "status"],
+    buckets=[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5],
+)

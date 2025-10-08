@@ -197,3 +197,23 @@ make push
 - 测试失败：
   - 先运行 `make test` 查看具体失败用例与断言
   - 确认端口与 HOST 一致（Makefile 默认 `HOST=127.0.0.1 PORT=8001`）
+
+## Docker Compose 运行
+- 启动：`HOST_PORT=8000 docker compose up -d --build`
+- 健康检查：`curl http://localhost:8000/health`
+- 查看日志：`docker compose logs -f app`
+- 如端口占用，改 `HOST_PORT=8080`
+
+## 配置（.env）
+- 将 `.env.example` 复制为 `.env` 并按需修改
+- 列表型字段必须是 JSON 字符串：
+  - `APP_CORS_ALLOW_ORIGINS='["http://localhost:3000"]'`
+
+## 指标（Prometheus）
+- 暴露端点：`/metrics`（Prometheus 文本格式）
+- 包含：
+  - Python/进程默认指标
+  - 请求数量：`app_http_requests_total{method,path,status}`
+  - 请求耗时直方图：`app_http_request_duration_seconds_*`
+- 本地验证：
+  - `curl http://localhost:8000/metrics | head -n 20`
